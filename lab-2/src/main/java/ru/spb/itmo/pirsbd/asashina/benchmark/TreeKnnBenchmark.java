@@ -10,14 +10,14 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
 import java.util.concurrent.TimeUnit;
 
 @State(Scope.Thread)
+@BenchmarkMode(Mode.AverageTime)
+@OutputTimeUnit(TimeUnit.MILLISECONDS)
+@Warmup(iterations = 3, time = 1)
+@Measurement(iterations = 10, time = 1)
+@Fork(value = 2, warmups = 1)
 public class TreeKnnBenchmark {
 
     @Benchmark
-    @BenchmarkMode(Mode.AverageTime)
-    @OutputTimeUnit(TimeUnit.MILLISECONDS)
-    @Warmup(iterations = 3, time = 1)
-    @Measurement(iterations = 10, time = 1)
-    @Fork(value = 2, warmups = 1)
     public void knnGetOneNeighbour(Blackhole blackhole, BenchmarkValues benchmarkValues) {
         var treeKnn = benchmarkValues.getKnn();
         var data = treeKnn.getData();
@@ -26,11 +26,6 @@ public class TreeKnnBenchmark {
     }
 
     @Benchmark
-    @BenchmarkMode(Mode.AverageTime)
-    @OutputTimeUnit(TimeUnit.MILLISECONDS)
-    @Warmup(iterations = 3, time = 1)
-    @Measurement(iterations = 10, time = 1)
-    @Fork(value = 2, warmups = 1)
     public void knnGetAllNeighbours(Blackhole blackhole, BenchmarkValues benchmarkValues) {
         var treeKnn = benchmarkValues.getKnn();
         var data = treeKnn.getData();

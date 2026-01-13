@@ -5,8 +5,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.HashSet;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class TreeKnnTest {
 
@@ -22,10 +21,9 @@ class TreeKnnTest {
         var classifier = new TreeKnn(x, 1, 2, false);
 
         var result = classifier.getKNeighbours(searchedX);
-        assertEquals(2, result.length);
+        assertThat(result).hasNumberOfRows(2);
         var resultSet = new HashSet<>(Arrays.asList(x));
-        assertTrue(resultSet.contains(x3));
-        assertTrue(resultSet.contains(x4));
+        assertThat(resultSet).contains(x3, x4);
     }
 
     @Test
@@ -40,10 +38,9 @@ class TreeKnnTest {
         var classifier = new TreeKnn(x, 6, 2, false);
 
         var result = classifier.getKNeighbours(searchedX);
-        assertEquals(2, result.length);
+        assertThat(result).hasNumberOfRows(2);
         var resultSet = new HashSet<>(Arrays.asList(x));
-        assertTrue(resultSet.contains(x3));
-        assertTrue(resultSet.contains(x4));
+        assertThat(resultSet).contains(x3, x4);
     }
 
 }

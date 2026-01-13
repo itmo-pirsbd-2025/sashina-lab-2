@@ -4,6 +4,8 @@ import ru.spb.itmo.pirsbd.asashina.core.BallTree;
 import ru.spb.itmo.pirsbd.asashina.utils.KnnUtils.DistanceIndex;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Comparator;
 
 public class TreeKnn implements Knn {
@@ -22,7 +24,7 @@ public class TreeKnn implements Knn {
     public TreeKnn(String fileName, int rowAmount, int leafSize, int neighboursAmount) {
         var data = readData(fileName, rowAmount);
         this.tree = new BallTree(neighboursAmount, leafSize, data);
-        saveData();
+        saveDataToTemp();
     }
 
     public int[][] getData() {
@@ -45,7 +47,8 @@ public class TreeKnn implements Knn {
         boolean isFirstLine = true;
         var size = 0;
         var data = new int[rowAmount][];
-        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+        try (InputStream is = getClass().getClassLoader().getResourceAsStream(fileName);
+                BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
             String line;
             while ((line = br.readLine()) != null) {
                 if (isFirstLine) {
@@ -79,6 +82,18 @@ public class TreeKnn implements Knn {
             bw.write(tree.toString());
         } catch (IOException e) {
             throw new RuntimeException("IO Exception occurred", e);
+        }
+    }
+
+    private void saveDataToTemp() {
+        try {
+            var tempDir = Files.createTempDirectory("knn_output_");
+            var outputFile = tempDir.resolve("output.txt");
+            try (BufferedWriter bw = Files.newBufferedWriter(outputFile)) {
+                bw.write(tree.toString());
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("IO Exception occurred while saving data to temp directory", e);
         }
     }
 

@@ -7,6 +7,7 @@ import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ public class TreeKnnV2 implements Knn {
     public TreeKnnV2(String fileName, int rowAmount, int leafSize, int neighboursAmount) {
         var data = readData(fileName, rowAmount);
         this.tree = new BallTreeV2(neighboursAmount, leafSize, data);
-        saveData();
+        saveDataToTemp();
     }
 
     public int[][] getData() {
@@ -55,7 +56,8 @@ public class TreeKnnV2 implements Knn {
         boolean isFirstLine = true;
         var size = 0;
         var data = new int[rowAmount][];
-        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+        try (InputStream is = getClass().getClassLoader().getResourceAsStream(fileName);
+                BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
             String line;
             while ((line = br.readLine()) != null) {
                 if (isFirstLine) {
@@ -89,6 +91,18 @@ public class TreeKnnV2 implements Knn {
             bw.write(tree.toString());
         } catch (IOException e) {
             throw new RuntimeException("IO Exception occurred", e);
+        }
+    }
+
+    private void saveDataToTemp() {
+        try {
+            var tempDir = Files.createTempDirectory("knn_output_");
+            var outputFile = tempDir.resolve("output.txt");
+            try (BufferedWriter bw = Files.newBufferedWriter(outputFile)) {
+                bw.write(tree.toString());
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("IO Exception occurred while saving data to temp directory", e);
         }
     }
 

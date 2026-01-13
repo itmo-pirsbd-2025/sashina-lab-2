@@ -7,7 +7,7 @@ import ru.spb.itmo.pirsbd.asashina.core.knn.TreeKnn;
 @State(Scope.Benchmark)
 public class BenchmarkValues {
 
-    public static final String DATA_FILEPATH = "data/fashion-mnist_train.csv";
+    public static final String DATA_FILEPATH = "fashion-mnist_train.csv";
 
     @Param({"50", "200", "700", "1000", "2500"})
     private int dataAmount;

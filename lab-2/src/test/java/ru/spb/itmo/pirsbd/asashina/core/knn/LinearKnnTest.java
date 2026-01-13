@@ -5,8 +5,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.HashSet;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.*;
 
 class LinearKnnTest {
 
@@ -22,10 +21,9 @@ class LinearKnnTest {
         var classifier = new LinearKnn(x, 2);
 
         var result = classifier.getKNeighbours(searchedX);
-        assertEquals(2, result.length);
+        assertThat(result).hasNumberOfRows(2);
         var resultSet = new HashSet<>(Arrays.asList(x));
-        assertTrue(resultSet.contains(x3));
-        assertTrue(resultSet.contains(x4));
+        assertThat(resultSet).contains(x3, x4);
     }
 
 }
